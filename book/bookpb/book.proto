@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package book;
+
+option go_package = "bookpb";
+
+message Book {
+  string id = 1;
+  string title = 2;
+  string author = 3;
+  bool is_read = 4;
+}
+
+message GetBookRequest { string id = 1; }
+
+message GetBookResponse {
+  bool status = 1;
+  Book data = 2;
+}
+
+message AddBookRequest { Book book = 1; }
+
+message AddBookResponse {
+  bool status = 1;
+  Book data = 2;
+}
+
+message UpdateBookRequest { Book book = 1; }
+
+message UpdateBookResponse {
+  bool status = 1;
+  Book data = 2;
+}
+
+message DeleteBookRequest { string book_id = 1; }
+
+message DeleteBookResponse { bool status = 1; }
+
+message GetBooksRequest {}
+
+message GetBooksResponse {
+  bool status = 1;
+  Book data = 2;
+}
+
+message AddBatchBookRequest { Book book = 1; }
+
+message AddBatchBookResponse {
+  bool status = 1;
+  string message = 2;
+}
+
+service BookService {
+  rpc GetBook(GetBookRequest) returns (GetBookResponse) {};
+  rpc AddBook(AddBookRequest) returns (AddBookResponse) {};
+  rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse) {};
+  rpc DeleteBook(DeleteBookRequest) returns (DeleteBookResponse) {};
+  rpc GetBooks(GetBooksRequest) returns (stream GetBooksResponse) {};
+  rpc AddBatchBook(stream AddBatchBookRequest) returns (AddBatchBookResponse) {
+  };
+}
