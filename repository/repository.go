@@ -9,9 +9,6 @@ import (
 	"github.com/nadirbasalamah/books-grpc/model"
 )
 
-// membuat penyimpanan lokal dengan menggunakan slice
-var storage []model.Book = []model.Book{}
-
 // AddBook untuk menambahkan data buku
 func AddBook(bookData model.Book) model.Book {
 
