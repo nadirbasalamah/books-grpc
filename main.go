@@ -7,7 +7,9 @@ import (
 	"os"
 	"os/signal"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/nadirbasalamah/books-grpc/book/bookpb"
+	"github.com/nadirbasalamah/books-grpc/database"
 	"github.com/nadirbasalamah/books-grpc/server"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,6 +20,11 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	fmt.Println("Book service started")
+
+	// membuat koneksi ke DB
+	if err := database.Connect(); err != nil {
+		log.Fatal(err)
+	}
 
 	// membuat gRPC server
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")

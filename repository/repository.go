@@ -1,6 +1,10 @@
 package repository
 
 import (
+	"log"
+
+	"github.com/google/uuid"
+	"github.com/nadirbasalamah/books-grpc/database"
 	"github.com/nadirbasalamah/books-grpc/model"
 )
 
@@ -9,8 +13,22 @@ var storage []model.Book = []model.Book{}
 
 // AddBook untuk menambahkan data buku
 func AddBook(bookData model.Book) model.Book {
-	storage = append(storage, bookData)
+	var uuid string = uuid.New().String()
+
+	_, err := database.DB.Query("INSERT INTO books (id, title, author, is_read) VALUES (?, ?, ?, ?)",
+		uuid,
+		bookData.Title,
+		bookData.Author,
+		bookData.IsRead,
+	)
+
+	if err != nil {
+		log.Fatalf("Insert data failed: %v", err)
+		return model.Book{}
+	}
+
 	return bookData
+
 }
 
 // GetBook untuk mendapatkan data buku berdasarkan id
