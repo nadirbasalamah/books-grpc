@@ -1,13 +1,16 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 
 	"github.com/nadirbasalamah/books-grpc/book/bookpb"
+	"github.com/nadirbasalamah/books-grpc/client/service"
 	"google.golang.org/grpc"
 )
+
+// membuat variabel untuk menyimpan service
+var clientService service.Service
 
 func main() {
 	fmt.Println("Client of Book Service")
@@ -24,12 +27,15 @@ func main() {
 	// membuat client gRPC
 	var client bookpb.BookServiceClient = bookpb.NewBookServiceClient(cc)
 
+	// membuat service
+	clientService = service.Service{Client: client}
+
 	// memanggil fungsi showOptions
-	showOptions(client)
+	showOptions()
 }
 
 // showOptions menampilkan pilihan menu di konsol / terminal
-func showOptions(client bookpb.BookServiceClient) {
+func showOptions() {
 	var done bool = false
 
 	for {
@@ -53,18 +59,28 @@ func showOptions(client bookpb.BookServiceClient) {
 		switch choice {
 		case 1:
 			fmt.Println("Adding book..")
-			// memanggil fungsi addBook
-			addBook(client)
+			// memanggil fungsi AddBook
+			clientService.AddBook()
 		case 2:
 			fmt.Println("Adding many books..")
+			// memanggil fungsi AddBatchBook
+			clientService.AddBatchBook()
 		case 3:
 			fmt.Println("Getting all books..")
+			// memanggil fungsi GetBooks
+			clientService.GetBooks()
 		case 4:
 			fmt.Println("Getting book..")
+			// memanggil fungsi GetBook
+			clientService.GetBook()
 		case 5:
 			fmt.Println("Updating book..")
+			// memanggil fungsi UpdateBook
+			clientService.UpdateBook()
 		case 6:
 			fmt.Println("Deleting book..")
+			// memanggil fungsi DeleteBook
+			clientService.DeleteBook()
 		case 7:
 			fmt.Println("Good Bye")
 			// ganti done menjadi true
@@ -83,29 +99,4 @@ func showOptions(client bookpb.BookServiceClient) {
 			break
 		}
 	}
-}
-
-// addBook untuk menambahkan data buku
-func addBook(client bookpb.BookServiceClient) {
-
-	// membuat request
-	var request bookpb.AddBookRequest = bookpb.AddBookRequest{
-		Book: &bookpb.Book{
-			Title:  "my book",
-			Author: "grpc client",
-			IsRead: false,
-		},
-	}
-
-	// menambahkan data buku
-	res, err := client.AddBook(context.Background(), &request)
-
-	// jika terdapat error
-	// tampilkan error
-	if err != nil {
-		log.Fatalf("Server error: %v", err)
-	}
-
-	// menampilkan response dari server
-	fmt.Printf("Book added: %v\n", res)
 }
