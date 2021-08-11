@@ -30,6 +30,8 @@ func AddBook(bookData model.Book) model.Book {
 	}
 
 	// mengembalikan data buku yang dimasukkan
+	bookData.Id = uuid
+
 	return bookData
 
 }
